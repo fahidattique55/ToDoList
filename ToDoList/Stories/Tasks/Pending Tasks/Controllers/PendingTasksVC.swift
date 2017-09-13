@@ -182,6 +182,7 @@ extension PendingTasksVC: UITableViewDelegate {
             let task = taskUtility.pendingTasks[indexPath.row]
             _ = taskUtility.removeTask(task)
             tableView.deleteRows(at: [indexPath], with: .none)
+            tableView.reloadEmptyDataSet()
             updateTasksBadge()
         }
     }

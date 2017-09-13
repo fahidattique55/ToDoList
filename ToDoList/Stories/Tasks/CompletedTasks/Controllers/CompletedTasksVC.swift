@@ -138,6 +138,7 @@ extension CompletedTasksVC: UITableViewDelegate {
             let task = taskUtility.completedTasks[indexPath.row]
             _ = taskUtility.removeTask(task)
             tableView.deleteRows(at: [indexPath], with: .none)
+            tableView.reloadEmptyDataSet()
             updateTasksBadge()
         }
     }
