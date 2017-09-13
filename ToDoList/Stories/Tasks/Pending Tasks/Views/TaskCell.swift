@@ -1,5 +1,5 @@
 //
-//  PendingTaskCell.swift
+//  TaskCell.swift
 //  ToDoList
 //
 //  Created by Fahid Attique on 13/09/2017.
@@ -8,12 +8,12 @@
 
 import UIKit
 
-class PendingTaskCell: UITableViewCell {
+class TaskCell: UITableViewCell {
 
     
     //  MARK:- Properties
     
-    static let identifier = "pendingTaskCell"
+    static let identifier = "TaskCell"
     
     
     

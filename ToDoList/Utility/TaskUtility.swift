@@ -1,5 +1,5 @@
 //
-//  AppUtility.swift
+//  TaskUtility.swift
 //  ToDoList
 //
 //  Created by Fahid Attique on 13/09/2017.
@@ -9,11 +9,12 @@
 import UIKit
 
 
-let appUtility = TaskUtility.sharedInstance
+let taskUtility = TaskUtility.sharedInstance
 
 class TaskUtility: NSObject {
 
 
+    
     // MARK: - Static
 
     static let sharedInstance = TaskUtility()
@@ -51,7 +52,4 @@ class TaskUtility: NSObject {
     func removeTask(_ task: Task) -> Bool {
         return allTasks.removeObject(task)
     }
-
-
-    
 }

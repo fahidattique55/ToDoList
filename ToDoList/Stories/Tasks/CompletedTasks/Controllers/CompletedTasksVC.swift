@@ -18,6 +18,8 @@ class CompletedTasksVC: UIViewController {
     
     
     
+    
+    
     //  MARK:- Life Cycle
     
     
@@ -39,12 +41,14 @@ class CompletedTasksVC: UIViewController {
     }
     
 
+    
+    
     //  MARK:- Fuctions
     
     
     fileprivate func viewConfigurations() {
         
-        completedTasksTableView.register(UINib(nibClassName: PendingTaskCell.self), forCellReuseIdentifier: PendingTaskCell.identifier)
+        completedTasksTableView.register(UINib(nibClassName: TaskCell.self), forCellReuseIdentifier: TaskCell.identifier)
         completedTasksTableView.emptyDataSetSource = self
         completedTasksTableView.emptyDataSetDelegate = self
     }
@@ -55,10 +59,20 @@ class CompletedTasksVC: UIViewController {
     }
     
     func updateViewWith(_ notification: NSNotification) {
+
         completedTasksTableView.reloadData()
-        tabBarController?.tabBar.items?[1].badgeValue = appUtility.completedTasksCount
+        updateTasksBadge()
+    }
+    
+    
+    func updateTasksBadge()  {
+
+        let tabBarVC = tabBarController as! TasksTabBarVC
+        tabBarVC.updateTasksBadge()
     }
 }
+
+
 
 
 
@@ -72,17 +86,21 @@ class CompletedTasksVC: UIViewController {
 extension CompletedTasksVC: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return appUtility.completedTasks.count
+        return taskUtility.completedTasks.count
     }
     
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell: PendingTaskCell = tableView.dequeueReusableCell(withIdentifier: PendingTaskCell.identifier) as! PendingTaskCell
-        let pendingTask = appUtility.completedTasks[indexPath.row]
+        let cell: TaskCell = tableView.dequeueReusableCell(withIdentifier: TaskCell.identifier) as! TaskCell
+        let pendingTask = taskUtility.completedTasks[indexPath.row]
         cell.configure(task: pendingTask)
         return cell
     }
 }
+
+
+
+
 
 
 
@@ -93,11 +111,17 @@ extension CompletedTasksVC: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        let task = appUtility.completedTasks[indexPath.row]
+        let task = taskUtility.completedTasks[indexPath.row]
         task.markPending()
+
         tableView.deleteRows(at: [indexPath], with: .none)
+        tableView.reloadEmptyDataSet()
+        
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: Task.typeMarkedPending), object: nil)
+        
         Utility.showAlert("", message: messageTaskPending, onController: self)
+        
+        updateTasksBadge()
     }
 
     
@@ -110,12 +134,15 @@ extension CompletedTasksVC: UITableViewDelegate {
         
         if editingStyle == .delete {
             
-            let task = appUtility.completedTasks[indexPath.row]
-            _ = appUtility.removeTask(task)
+            let task = taskUtility.completedTasks[indexPath.row]
+            _ = taskUtility.removeTask(task)
             tableView.deleteRows(at: [indexPath], with: .none)
         }
     }
 }
+
+
+
 
 
 
@@ -144,6 +171,9 @@ extension CompletedTasksVC : DZNEmptyDataSetSource {
         return UIColor.clear
     }
 }
+
+
+
 
 
 

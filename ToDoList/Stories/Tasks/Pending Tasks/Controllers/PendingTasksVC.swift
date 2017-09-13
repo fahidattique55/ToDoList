@@ -12,13 +12,12 @@ import UIKit
 class PendingTasksVC: UIViewController {
     
     
-    //  MARK:- Properties
-    
-    
-    
     //  MARK:- IBOutlets
     
     @IBOutlet var pendingTasksTableView: UITableView!
+
+    
+    
     
     
     //  MARK:- Life Cycle
@@ -43,12 +42,13 @@ class PendingTasksVC: UIViewController {
     
     
     
+    
     //  MARK:- Fuctions
     
 
     fileprivate func viewConfigurations() {
         
-        pendingTasksTableView.register(UINib(nibClassName: PendingTaskCell.self), forCellReuseIdentifier: PendingTaskCell.identifier)
+        pendingTasksTableView.register(UINib(nibClassName: TaskCell.self), forCellReuseIdentifier: TaskCell.identifier)
         pendingTasksTableView.emptyDataSetSource = self
         pendingTasksTableView.emptyDataSetDelegate = self
     }
@@ -61,18 +61,26 @@ class PendingTasksVC: UIViewController {
     func updateViewWith(_ notification: NSNotification) {
 
         pendingTasksTableView.reloadData()
-        tabBarController?.tabBar.items?[0].badgeValue = appUtility.pendingTasksCount
-
     }
     
     fileprivate func createTaskWithName( _ name: String) {
         
-        appUtility.addTask(Task(name))
+        taskUtility.addTask(Task(name))
         pendingTasksTableView.reloadData()
+        updateTasksBadge()
     }
+    
+    fileprivate func updateTasksBadge()  {
+        
+        let tabBarVC = tabBarController as! TasksTabBarVC
+        tabBarVC.updateTasksBadge()
+    }
+
     
     
 
+    
+    
     
     //  MARK:- IBActions
     
@@ -90,7 +98,7 @@ class PendingTasksVC: UIViewController {
             let taskfield: UITextField = textfields![0]
             
             if taskfield.text!.isEmpty {
-                Utility.showAlert(titleError, message: "Please enter task name", onController: self)
+                Utility.showAlert("", message: "Please enter task name", onController: self)
             }
             else { self.createTaskWithName(taskfield.text!) }
         })
@@ -112,19 +120,23 @@ class PendingTasksVC: UIViewController {
 
 
 
+
+
+
+
 extension PendingTasksVC: UITableViewDataSource {
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return appUtility.pendingTasks.count
+        return taskUtility.pendingTasks.count
     }
     
     
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell: PendingTaskCell = tableView.dequeueReusableCell(withIdentifier: PendingTaskCell.identifier) as! PendingTaskCell
-        let pendingTask = appUtility.pendingTasks[indexPath.row]
+        let cell: TaskCell = tableView.dequeueReusableCell(withIdentifier: TaskCell.identifier) as! TaskCell
+        let pendingTask = taskUtility.pendingTasks[indexPath.row]
         cell.configure(task: pendingTask)
         return cell
     }
@@ -132,17 +144,26 @@ extension PendingTasksVC: UITableViewDataSource {
 }
 
 
+
+
+
+
 extension PendingTasksVC: UITableViewDelegate {
     
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        let task = appUtility.pendingTasks[indexPath.row]
+        let task = taskUtility.pendingTasks[indexPath.row]
         task.markCompleted()
+
         tableView.deleteRows(at: [indexPath], with: .none)
-        
+        tableView.reloadEmptyDataSet()
+
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: Task.typeMarkedCompleted), object: nil)
+        
         Utility.showAlert("", message: messageTaskCompleted, onController: self)
+        
+        updateTasksBadge()
     }
 
     
@@ -155,14 +176,18 @@ extension PendingTasksVC: UITableViewDelegate {
         
         if editingStyle == .delete {
             
-            let task = appUtility.pendingTasks[indexPath.row]
-            _ = appUtility.removeTask(task)
+            let task = taskUtility.pendingTasks[indexPath.row]
+            _ = taskUtility.removeTask(task)
             tableView.deleteRows(at: [indexPath], with: .none)
         }
     }
     
     
 }
+
+
+
+
 
 
 
@@ -190,6 +215,8 @@ extension PendingTasksVC : DZNEmptyDataSetSource {
         return UIColor.clear
     }
 }
+
+
 
 
 

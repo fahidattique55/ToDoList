@@ -10,6 +10,10 @@ import UIKit
 
 class TasksTabBarVC: UITabBarController {
 
+
+    
+    // MARK: - Life Cycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -22,14 +26,15 @@ class TasksTabBarVC: UITabBarController {
     }
     
 
-    /*
-    // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    
+    
+    // MARK: - Functions
+    
+    func updateTasksBadge() {
+
+        tabBar.items?[0].badgeValue = taskUtility.pendingTasksCount
+        tabBar.items?[1].badgeValue = taskUtility.completedTasksCount
     }
-    */
-
+    
 }
