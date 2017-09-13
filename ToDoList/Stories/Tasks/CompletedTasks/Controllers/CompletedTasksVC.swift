@@ -49,6 +49,8 @@ class CompletedTasksVC: UIViewController {
     fileprivate func viewConfigurations() {
         
         completedTasksTableView.register(UINib(nibClassName: TaskCell.self), forCellReuseIdentifier: TaskCell.identifier)
+        completedTasksTableView.estimatedRowHeight = 44
+        completedTasksTableView.rowHeight = UITableViewAutomaticDimension
         completedTasksTableView.emptyDataSetSource = self
         completedTasksTableView.emptyDataSetDelegate = self
     }
@@ -137,6 +139,7 @@ extension CompletedTasksVC: UITableViewDelegate {
             let task = taskUtility.completedTasks[indexPath.row]
             _ = taskUtility.removeTask(task)
             tableView.deleteRows(at: [indexPath], with: .none)
+            updateTasksBadge()
         }
     }
 }

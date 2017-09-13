@@ -49,6 +49,8 @@ class PendingTasksVC: UIViewController {
     fileprivate func viewConfigurations() {
         
         pendingTasksTableView.register(UINib(nibClassName: TaskCell.self), forCellReuseIdentifier: TaskCell.identifier)
+        pendingTasksTableView.estimatedRowHeight = 44
+        pendingTasksTableView.rowHeight = UITableViewAutomaticDimension
         pendingTasksTableView.emptyDataSetSource = self
         pendingTasksTableView.emptyDataSetDelegate = self
     }
@@ -90,6 +92,7 @@ class PendingTasksVC: UIViewController {
         
         alert.addTextField(configurationHandler: {(_ textField: UITextField) -> Void in
             textField.placeholder = "Enter Task Name"
+            textField.autocapitalizationType = .sentences
         })
         
         let createAction = UIAlertAction(title: buttonCreate, style: .default, handler: {(_ action: UIAlertAction) -> Void in
@@ -179,6 +182,7 @@ extension PendingTasksVC: UITableViewDelegate {
             let task = taskUtility.pendingTasks[indexPath.row]
             _ = taskUtility.removeTask(task)
             tableView.deleteRows(at: [indexPath], with: .none)
+            updateTasksBadge()
         }
     }
     
