@@ -63,7 +63,6 @@ class CompletedTasksVC: UIViewController {
     func updateViewWith(_ notification: NSNotification) {
 
         completedTasksTableView.reloadData()
-        updateTasksBadge()
     }
     
     
